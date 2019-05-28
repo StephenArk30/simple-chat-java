@@ -35,8 +35,7 @@ class Handler extends Thread{
 					pwtoclien = new PrintWriter(send.getOutputStream());
 					pwtoclien.println(indata);
 					pwtoclien.flush();
-				}
-				else {
+				} else {
 					pwtoclien = new PrintWriter(socket.getOutputStream());
 					pwtoclien.println("your friend is offline!");
 					pwtoclien.flush();
@@ -78,8 +77,7 @@ public class Server {
 				if (c1 == null) {
 					c1 = new Handler(socket, null);
 					c1.start();
-				}
-				else if(c2 == null) {
+				} else if (c2 == null) {
 					c2 = new Handler(socket, c1.socket);
 					c1.setSend(socket);
 					c2.start();

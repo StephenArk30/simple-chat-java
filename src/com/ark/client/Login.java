@@ -55,8 +55,7 @@ public class Login extends JFrame implements ActionListener {
 				JOptionPane.showMessageDialog(this, "please input username", "empty username",
 						JOptionPane.ERROR_MESSAGE);
 				return;
-			}
-			if (txtHost.getText().equals("")) {
+			} else if (txtHost.getText().equals("")) {
 				JOptionPane.showMessageDialog(this, "please input host", "empty host", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
