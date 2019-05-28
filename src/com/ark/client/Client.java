@@ -33,7 +33,6 @@ public class Client extends Thread{
 				messages.append("network error!\n");
 			}
 		}
-		
 	};
 	
 	public Client(String ip, int port, String name) {
@@ -41,14 +40,14 @@ public class Client extends Thread{
 		SERVICE_PORT = port;
 		username = name;
 	}
-	
-	public static void runClient(){
-		System.out.println("connecting to server...");
+
+    public void run() {
+        System.out.println("connecting to server " + IP + ":" + SERVICE_PORT + "...");
 		Socket socket = null;
 		Scanner inScanner = null;
 		try {
 			socket = new Socket(IP, SERVICE_PORT);
-			inScanner = new Scanner(socket.getInputStream()); 
+            inScanner = new Scanner(socket.getInputStream());
 			System.out.println(inScanner.nextLine());
 			pwtoserver = new PrintWriter(socket.getOutputStream());
 			
@@ -63,25 +62,23 @@ public class Client extends Thread{
 			e.printStackTrace();
 		}
 	}
-	
-	public void run() {
+
+    public void initComponent() {
 		JFrame frame = new JFrame(username);
 		frame.getContentPane().setLayout(new BorderLayout());
 		messages.setEditable(false);
-		
-		JPanel textarea = new JPanel();
+
+        JPanel textarea = new JPanel();
 		textarea.setLayout(new BorderLayout());
 		JButton sendButton = new JButton("Send");
 		sendButton.addActionListener(sendListener);
 		textarea.add(text, BorderLayout.CENTER);
 		textarea.add(sendButton, BorderLayout.EAST);
-		
-		frame.add(messages, BorderLayout.CENTER);
+
+        frame.add(messages, BorderLayout.CENTER);
 		frame.add(textarea, BorderLayout.SOUTH);
 		frame.setSize(280, 400);
-		
-		frame.setVisible(true);
-		
-		runClient();
+
+        frame.setVisible(true);
 	}
 }
