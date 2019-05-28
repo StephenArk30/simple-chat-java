@@ -1,14 +1,14 @@
-package Net;
+package com.ark.client;
 
 import java.util.Scanner;
 
-public class Test {
+public class Login {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
-		System.out.println("请输入用户名");
+		System.out.println("username: ");
 		String name = sc.next();
-		System.out.println("请输入连接地址");
+		System.out.println("server host: ");
 		String[] ip = sc.next().split(":");
 		String host = ip[0];
 		int port = 80;

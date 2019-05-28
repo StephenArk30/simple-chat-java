@@ -1,4 +1,4 @@
-package Net;
+package com.ark.server;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.*;
@@ -15,7 +15,7 @@ class Handler extends Thread{
 		send = sends;
 		try {
 			pwtoclien = new PrintWriter(socket.getOutputStream());
-			pwtoclien.println("已成功连接到远程服务器！");
+			pwtoclien.println("connected to server");
 			pwtoclien.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -28,7 +28,6 @@ class Handler extends Thread{
 	public void run() {
 		try {
 			inScanner = new Scanner(socket.getInputStream());
-			//阻塞等待客户端发送消息过来
 			while(inScanner.hasNextLine()){
 				String indata = inScanner.nextLine();
 				System.out.println(indata);
@@ -39,7 +38,7 @@ class Handler extends Thread{
 				}
 				else {
 					pwtoclien = new PrintWriter(socket.getOutputStream());
-					pwtoclien.println("对方未上线！");
+					pwtoclien.println("your friend is offline!");
 					pwtoclien.flush();
 				}
 			}
@@ -69,11 +68,11 @@ public class Server {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		System.out.println("服务器已打开");
+		System.out.println("server start");
 		while(true) {
 			try {
 				Socket socket = ss.accept();
-				System.out.println(socket.getInetAddress()+"已成功连接到此台服务器上。");
+				System.out.println(socket.getInetAddress() + " connected");
 				if (c1 == null) {
 					c1 = new Handler(socket, null);
 					c1.start();

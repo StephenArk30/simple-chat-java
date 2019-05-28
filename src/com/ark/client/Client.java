@@ -1,4 +1,4 @@
-package Net;
+package com.ark.client;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -43,7 +43,7 @@ public class Client extends Thread{
 	}
 	
 	public static void runClient(){
-		System.out.println("正在向服务器请求连接。。。");
+		System.out.println("connecting to server...");
 		Socket socket = null;
 		Scanner inScanner = null;
 		try {
@@ -57,7 +57,7 @@ public class Client extends Thread{
 				messages.append(indata + "\n");
 			}
 		} catch (UnknownHostException e) {
-			System.out.println("找不到服务器！");
+			System.out.println("connection failed!");
 			// e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -71,7 +71,7 @@ public class Client extends Thread{
 		
 		JPanel textarea = new JPanel();
 		textarea.setLayout(new BorderLayout());
-		JButton sendButton = new JButton("发送");
+		JButton sendButton = new JButton("Send");
 		sendButton.addActionListener(sendListener);
 		textarea.add(text, BorderLayout.CENTER);
 		textarea.add(sendButton, BorderLayout.EAST);
