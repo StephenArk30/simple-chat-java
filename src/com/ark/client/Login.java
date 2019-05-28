@@ -3,17 +3,14 @@ package com.ark.client;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.Scanner;
 
 public class Login extends JFrame implements ActionListener {
 
-	protected static Thread thread = null;
-	protected JLabel lbUserName, lbHost;
-	protected JTextField txtUserName;
-	protected JTextField txtHost;
-	protected JButton btnLogin, btnReset;
+	private JTextField txtUserName;
+	private JTextField txtHost;
+	private JButton btnLogin, btnReset;
 
-	public Login() {
+	private Login() {
 		super("Login");
 		initComponent();
 	}
@@ -22,9 +19,9 @@ public class Login extends JFrame implements ActionListener {
 		new Login();
 	}
 
-	public void initComponent() {
-		lbUserName = new JLabel("username");
-		lbHost = new JLabel("host");
+	private void initComponent() {
+		JLabel lbUserName = new JLabel("username");
+		JLabel lbHost = new JLabel("host");
 
 		txtUserName = new JTextField(10);
 		txtHost = new JTextField(10);

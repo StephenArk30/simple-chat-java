@@ -6,9 +6,9 @@ import java.util.Scanner;
 
 class Handler extends Thread{
 	Socket socket;
-	Socket send;
-	PrintWriter pwtoclien = null;
-	Scanner inScanner = null;
+	private Socket send;
+	private PrintWriter pwtoclien = null;
+	private Scanner inScanner = null;
 	
 	Handler(Socket mys, Socket sends) {
 		socket = mys;
@@ -57,19 +57,21 @@ class Handler extends Thread{
 }
 
 public class Server {
-	public static final int SERVICE_PORT = 8080;
-	static Handler c1 = null;
-	static Handler c2 = null;
-	
-	static void runServer() {
+	private static final int SERVICE_PORT = 8080;
+	private static Handler c1 = null;
+	private static Handler c2 = null;
+
+	private static void runServer() {
 		ServerSocket ss = null;
 		try {
 			ss = new ServerSocket(SERVICE_PORT);
 		} catch (IOException e1) {
 			e1.printStackTrace();
+			System.out.println("server start failed");
+			return;
 		}
 		System.out.println("server start");
-		while(true) {
+		while (true) {
 			try {
 				Socket socket = ss.accept();
 				System.out.println(socket.getInetAddress() + " connected");

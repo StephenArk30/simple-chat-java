@@ -12,15 +12,15 @@ import java.util.Scanner;
 import javax.swing.*;
 
 public class Client extends Thread{
-	public static int SERVICE_PORT = 8080;
-	public static String IP = "localhost";
-	static String username = "";
-	
-	static PrintWriter pwtoserver = null;
-	
-	static JTextArea messages = new JTextArea();
-	JTextField text = new JTextField();
-	ActionListener sendListener = new ActionListener() {
+    private static int SERVICE_PORT = 8080;
+    private static String IP = "localhost";
+    private static String username = "";
+
+    private static PrintWriter pwtoserver = null;
+
+    private static JTextArea messages = new JTextArea();
+    private JTextField text = new JTextField();
+    private ActionListener sendListener = new ActionListener() {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -34,8 +34,8 @@ public class Client extends Thread{
 			}
 		}
 	};
-	
-	public Client(String ip, int port, String name) {
+
+    Client(String ip, int port, String name) {
 		IP = ip;
 		SERVICE_PORT = port;
 		username = name;
@@ -50,8 +50,8 @@ public class Client extends Thread{
             inScanner = new Scanner(socket.getInputStream());
 			System.out.println(inScanner.nextLine());
 			pwtoserver = new PrintWriter(socket.getOutputStream());
-			
-			while(true) {
+
+            while (true) {
 				String indata = inScanner.nextLine();
 				messages.append(indata + "\n");
 			}
@@ -63,7 +63,7 @@ public class Client extends Thread{
 		}
 	}
 
-    public void initComponent() {
+    void initComponent() {
 		JFrame frame = new JFrame(username);
 		frame.getContentPane().setLayout(new BorderLayout());
 		messages.setEditable(false);
