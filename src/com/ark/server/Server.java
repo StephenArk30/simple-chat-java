@@ -1,7 +1,11 @@
 package com.ark.server;
+
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 class Handler extends Thread{
@@ -23,6 +27,28 @@ class Handler extends Thread{
 	}
 	
 	void setSend(Socket sends) { send = sends; }
+
+	void sendFile() {
+		try {
+			BufferedInputStream bin = new BufferedInputStream(socket.getInputStream());
+			OutputStream out = send.getOutputStream();
+			int len = 0;
+			while (true) {
+				byte[] buf = new byte[1024];
+				if ((len = bin.read(buf)) == -1) break;
+				String line = new String(buf);
+				line = line.replaceAll("\n", " ");
+				line = line.replaceAll("\r", " ");
+				System.out.println("||" + line + "||");
+				out.write(buf, 0, len);
+				out.flush();
+				if (line.matches(".*\\$EOF\\$.*")) break;
+			}
+			System.out.println("file send complete");
+		} catch (IOException except) {
+			return;
+		}
+	}
 	
 	@Override
 	public void run() {
@@ -32,9 +58,16 @@ class Handler extends Thread{
 				String indata = inScanner.nextLine();
 				System.out.println(indata);
 				if(send != null) {
-					pwtoclien = new PrintWriter(send.getOutputStream());
-					pwtoclien.println(indata);
-					pwtoclien.flush();
+					if (indata.startsWith("$FILE$")) {
+						pwtoclien = new PrintWriter(send.getOutputStream());
+						pwtoclien.println(indata);
+						pwtoclien.flush();
+						sendFile();
+					} else {
+						pwtoclien = new PrintWriter(send.getOutputStream());
+						pwtoclien.println(indata);
+						pwtoclien.flush();
+					}
 				} else {
 					pwtoclien = new PrintWriter(socket.getOutputStream());
 					pwtoclien.println("your friend is offline!");

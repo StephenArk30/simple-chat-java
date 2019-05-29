@@ -43,6 +43,7 @@ public class Login extends JFrame implements ActionListener {
 		txtUserName.setFocusable(true);
 
 		this.setSize(300, 200);
+		setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
 

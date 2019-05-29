@@ -6,11 +6,14 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class Client extends Thread{
     private static int SERVICE_PORT = 8080;
@@ -54,10 +57,15 @@ public class Client extends Thread{
                     OutputStream out = socket.getOutputStream();
                     byte[] buf = new byte[1024];
                     int len = 0;
-                    while ((len = bin.read(buf)) != -1)
+                    while ((len = bin.read(buf)) != -1) {
+                        System.out.println(new String(buf));
                         out.write(buf, 0, len);
-
-                    socket.shutdownOutput(); // upload complete
+                    }
+                    String eof = "$EOF$";
+                    buf = eof.getBytes();
+                    out.write(buf, 0, buf.length);
+                    out.flush();
+                    System.out.println("file upload succeed");
                 } catch (Exception err) {
                     messages.append("network error!\n");
                 }
@@ -84,9 +92,10 @@ public class Client extends Thread{
                 try {
                     String indata = inScanner.nextLine();
                     if (indata.startsWith("$FILE$")) {
-                        boolean res = recieveFile(indata.substring(5));
-                    }
-                    messages.append(indata + "\n");
+                        boolean res = recieveFile(indata.substring(6));
+                        if (res) messages.append(indata.substring(6) + "\n");
+                        else messages.append(indata.substring(6) + " RECEIVE FAILED锛乗n");
+                    } else messages.append(indata + "\n");
                 } catch (NoSuchElementException exception) {
                 }
 			}
@@ -112,12 +121,9 @@ public class Client extends Thread{
         if (!dir.exists()) dir.mkdir(); // create folder if not exist
 
         // read filename
-        InputStreamReader insr = new InputStreamReader(bin);
 
-        int count = 1;
-        //我觉得这里的后缀名，需要通过发送方也发过来的
         File file = new File(dir, fileName);
-        if (file.exists()) file = new File(dir, fileName); //带号的文件名
+        if (file.exists()) file = new File(dir, fileName);
 
         FileOutputStream fout = null;
         try {
@@ -132,14 +138,27 @@ public class Client extends Thread{
         int len = 0;
         try {
             bin.read(buf, 0, 8);
-            while ((len = bin.read(buf)) != -1) {
+            while (true) {
+                buf = new byte[1024];
+                if ((len = bin.read(buf)) == -1) break;
+                String line = new String(buf);
+                line = line.replaceAll("\n", " ");
+                line = line.replaceAll("\r", " ");
+                System.out.println("||" + line + "||");
+                if (line.matches(".*\\$EOF\\$.*")) break;
                 fout.write(buf, 0, len);
             }
+            fout.close();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
+            try {
+                fout.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
             return false;
         }
-        return true;
     }
 
     void initComponent() {
@@ -160,9 +179,14 @@ public class Client extends Thread{
 		textarea.add(text, BorderLayout.CENTER);
         textarea.add(buttonPanel, BorderLayout.EAST);
 
-        frame.add(messages, BorderLayout.CENTER);
+        JScrollPane messagewin = new JScrollPane
+                (messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        frame.add(messagewin, BorderLayout.CENTER);
 		frame.add(textarea, BorderLayout.SOUTH);
 		frame.setSize(280, 400);
+
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         frame.setVisible(true);
 	}
